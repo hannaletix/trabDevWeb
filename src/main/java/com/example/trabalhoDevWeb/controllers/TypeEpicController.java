@@ -14,12 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class TypeEpicController {
-
     @Autowired
     TypeEpicRepository typeEpicRepository;
 
     @PostMapping("/typeEpics")
-    public ResponseEntity<TypeEpicModel> saveTask(@RequestBody @Valid TypeEpicDto typeEpicDto) {
+    public ResponseEntity<TypeEpicModel> saveTypeEpic(@RequestBody @Valid TypeEpicDto typeEpicDto) {
         var typeEpicModel = new TypeEpicModel();
         typeEpicModel.setId(typeEpicDto.id());
         BeanUtils.copyProperties(typeEpicDto, typeEpicModel);

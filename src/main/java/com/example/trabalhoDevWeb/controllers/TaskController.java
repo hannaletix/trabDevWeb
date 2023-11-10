@@ -16,10 +16,8 @@ import java.util.UUID;
 
 @RestController
 public class TaskController {
-
     @Autowired
     TaskRepository taskRepository;
-
     @PostMapping("/tasks")
     public ResponseEntity<TaskModel> saveTask(@RequestBody @Valid TaskDto taskDto) {
         var taskModel = new TaskModel();
