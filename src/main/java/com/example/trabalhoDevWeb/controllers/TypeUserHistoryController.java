@@ -9,12 +9,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class TypeUserHistoryController {
@@ -32,5 +30,16 @@ public class TypeUserHistoryController {
     @GetMapping("/typeUserHistory")
     public ResponseEntity<List<TypeUserHistoryModel>> getAllTypeUserHistory() {
         return ResponseEntity.status(HttpStatus.OK).body(typeUserHistoryRepository.findAll());
+    }
+
+    @GetMapping("/typeUserHistory/{id}")
+    public ResponseEntity<Object> getOneTypeUserHistory(@PathVariable(value = "id") String id) {
+        Optional<TypeUserHistoryModel> typeUserHistorySelected = typeUserHistoryRepository.findById(id);
+
+        if(typeUserHistorySelected.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Type Epic not found");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(typeUserHistorySelected.get());
     }
 }

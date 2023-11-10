@@ -2,6 +2,7 @@ package com.example.trabalhoDevWeb.controllers;
 
 import com.example.trabalhoDevWeb.dtos.UserHistoryDto;
 import com.example.trabalhoDevWeb.models.EpicModel;
+import com.example.trabalhoDevWeb.models.TaskModel;
 import com.example.trabalhoDevWeb.models.TypeUserHistoryModel;
 import com.example.trabalhoDevWeb.models.UserHistoryModel;
 import com.example.trabalhoDevWeb.repositories.EpicRepository;
@@ -12,11 +13,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class UserHistoryController {
@@ -48,5 +48,16 @@ public class UserHistoryController {
     @GetMapping("/userHistory")
     public ResponseEntity<List<UserHistoryModel>> getAllUserHistory() {
         return ResponseEntity.status(HttpStatus.OK).body(userHistoryRepository.findAll());
+    }
+
+    @GetMapping("/userHistory/{id}")
+    public ResponseEntity<Object> getOneUserHistory(@PathVariable(value = "id") String id) {
+        Optional<UserHistoryModel> userHistorySelected = userHistoryRepository.findById(id);
+
+        if(userHistorySelected.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Type Epic not found");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(userHistorySelected.get());
     }
 }

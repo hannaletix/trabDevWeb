@@ -8,11 +8,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class TypeEpicController {
@@ -31,5 +30,16 @@ public class TypeEpicController {
     @GetMapping("/typeEpics")
     public ResponseEntity<List<TypeEpicModel>> getAllTypeEpics() {
         return ResponseEntity.status(HttpStatus.OK).body(typeEpicRepository.findAll());
+    }
+
+    @GetMapping("/typeEpics/{id}")
+    public ResponseEntity<Object> getOneTypeEpic(@PathVariable(value = "id") String id) {
+        Optional<TypeEpicModel> typeEpicSelected = typeEpicRepository.findById(id);
+
+        if(typeEpicSelected.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Type Epic not found");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(typeEpicSelected.get());
     }
 }
