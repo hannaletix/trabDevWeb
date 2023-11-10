@@ -14,6 +14,12 @@ public class TaskModel implements Serializable {
     private String id;
     private String titulo;
     private String descricao;
+    @ManyToOne
+    @JoinColumn(name = "typeTask_id")
+    private TypeTaskModel typeTask;
+    @ManyToOne
+    @JoinColumn(name = "userHistory_id")
+    private UserHistoryModel userHistory;
 
     public String getId() {
         return id;
@@ -36,4 +42,12 @@ public class TaskModel implements Serializable {
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
+
+    public TypeTaskModel getTypeTask() { return typeTask; }
+
+    public void setTypeTask(TypeTaskModel typeTask) { this.typeTask = typeTask; }
+
+    public UserHistoryModel getUserHistory() { return userHistory; }
+
+    public void setUserHistory(UserHistoryModel userHistory) { this.userHistory = userHistory; }
 }

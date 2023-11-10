@@ -1,7 +1,9 @@
 package com.example.trabalhoDevWeb.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "TB_USER_HISTORY")
@@ -19,6 +21,9 @@ public class UserHistoryModel implements Serializable {
     @ManyToOne
     @JoinColumn(name = "epic_id")
     private EpicModel epic;
+    @OneToMany(mappedBy = "userHistory")
+    @JsonIgnore
+    private List<TaskModel> task;
 
     public String getId() {
         return id;
@@ -49,4 +54,8 @@ public class UserHistoryModel implements Serializable {
     public EpicModel getEpic() { return epic; }
 
     public void setEpic(EpicModel epic) { this.epic = epic; }
+
+    public List<TaskModel> getTask() { return task; }
+
+    public void setTask(List<TaskModel> task) { this.task = task; }
 }

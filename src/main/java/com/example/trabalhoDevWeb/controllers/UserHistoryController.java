@@ -32,12 +32,10 @@ public class UserHistoryController {
 
         TypeUserHistoryModel typeUserHistoryModel = typeUserHistoryRepository.findById(userHistoryDto.typeUserHistory_id())
                 .orElseThrow(() -> new RuntimeException("TypeEpic not found with id: " + userHistoryDto.typeUserHistory_id()));
-
         userHistoryModel.setTypeUserHistory(typeUserHistoryModel);
 
         EpicModel epicModel = epicRepository.findById(userHistoryDto.epic_id())
                 .orElseThrow(() -> new RuntimeException("TypeEpic not found with id: " + userHistoryDto.epic_id()));
-
         userHistoryModel.setEpic(epicModel);
 
         BeanUtils.copyProperties(userHistoryDto, userHistoryModel);
