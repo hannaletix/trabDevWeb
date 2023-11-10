@@ -1,6 +1,7 @@
 package com.example.trabalhoDevWeb.controllers;
 
 import com.example.trabalhoDevWeb.dtos.TypeUserHistoryDto;
+import com.example.trabalhoDevWeb.models.TypeTaskModel;
 import com.example.trabalhoDevWeb.models.TypeUserHistoryModel;
 import com.example.trabalhoDevWeb.repositories.TypeUserHistoryRepository;
 import jakarta.validation.Valid;
@@ -8,9 +9,12 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 public class TypeUserHistoryController {
@@ -23,5 +27,10 @@ public class TypeUserHistoryController {
         BeanUtils.copyProperties(typeUserHistoryDto, typeUserHistoryModel);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(typeUserHistoryRepository.save(typeUserHistoryModel));
+    }
+
+    @GetMapping("/typeUserHistory")
+    public ResponseEntity<List<TypeUserHistoryModel>> getAllTypeUserHistory() {
+        return ResponseEntity.status(HttpStatus.OK).body(typeUserHistoryRepository.findAll());
     }
 }
