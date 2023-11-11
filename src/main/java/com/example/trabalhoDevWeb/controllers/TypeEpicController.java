@@ -57,4 +57,16 @@ public class TypeEpicController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(typeEpicRepository.save(typeEpicModel));
     }
+
+    @DeleteMapping("/typeEpics/{id}")
+    public ResponseEntity<Object> deleteTypeEpic(@PathVariable(value = "id") String id) {
+        Optional<TypeEpicModel> typeEpicSelected = typeEpicRepository.findById(id);
+
+        if(typeEpicSelected.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Type Epic not found");
+        }
+
+        typeEpicRepository.delete(typeEpicSelected.get());
+        return ResponseEntity.status(HttpStatus.OK).body("Type Epic deleted sucessfully");
+    }
 }

@@ -2,10 +2,7 @@ package com.example.trabalhoDevWeb.controllers;
 
 import com.example.trabalhoDevWeb.dtos.EpicDto;
 import com.example.trabalhoDevWeb.dtos.UserHistoryDto;
-import com.example.trabalhoDevWeb.models.EpicModel;
-import com.example.trabalhoDevWeb.models.TaskModel;
-import com.example.trabalhoDevWeb.models.TypeUserHistoryModel;
-import com.example.trabalhoDevWeb.models.UserHistoryModel;
+import com.example.trabalhoDevWeb.models.*;
 import com.example.trabalhoDevWeb.repositories.EpicRepository;
 import com.example.trabalhoDevWeb.repositories.TypeUserHistoryRepository;
 import com.example.trabalhoDevWeb.repositories.UserHistoryRepository;
@@ -34,11 +31,11 @@ public class UserHistoryController {
         userHistoryModel.setId(userHistoryDto.id());
 
         TypeUserHistoryModel typeUserHistoryModel = typeUserHistoryRepository.findById(userHistoryDto.typeUserHistory_id())
-                .orElseThrow(() -> new RuntimeException("TypeEpic not found with id: " + userHistoryDto.typeUserHistory_id()));
+                .orElseThrow(() -> new RuntimeException("Type User History not found with id: " + userHistoryDto.typeUserHistory_id()));
         userHistoryModel.setTypeUserHistory(typeUserHistoryModel);
 
         EpicModel epicModel = epicRepository.findById(userHistoryDto.epic_id())
-                .orElseThrow(() -> new RuntimeException("TypeEpic not found with id: " + userHistoryDto.epic_id()));
+                .orElseThrow(() -> new RuntimeException("Epic not found with id: " + userHistoryDto.epic_id()));
         userHistoryModel.setEpic(epicModel);
 
         BeanUtils.copyProperties(userHistoryDto, userHistoryModel);
@@ -56,7 +53,7 @@ public class UserHistoryController {
         Optional<UserHistoryModel> userHistorySelected = userHistoryRepository.findById(id);
 
         if(userHistorySelected.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Type Epic not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User History not found");
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(userHistorySelected.get());
@@ -68,12 +65,24 @@ public class UserHistoryController {
         Optional<UserHistoryModel> userHistorySelected = userHistoryRepository.findById(id);
 
         if(userHistorySelected.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Type Task not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User History not found");
         }
 
         var userHistoryModel = userHistorySelected.get();
         BeanUtils.copyProperties(userHistoryDto, userHistoryModel);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(userHistoryRepository.save(userHistoryModel));
+    }
+
+    @DeleteMapping("/userHistory/{id}")
+    public ResponseEntity<Object> deleteUserHistory(@PathVariable(value = "id") String id) {
+        Optional<UserHistoryModel> userHistorySelected = userHistoryRepository.findById(id);
+
+        if(userHistorySelected.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User History not found");
+        }
+
+        userHistoryRepository.delete(userHistorySelected.get());
+        return ResponseEntity.status(HttpStatus.OK).body("User History deleted sucessfully");
     }
 }

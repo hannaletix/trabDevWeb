@@ -4,6 +4,7 @@ import com.example.trabalhoDevWeb.dtos.TypeTaskDto;
 import com.example.trabalhoDevWeb.dtos.TypeUserHistoryDto;
 import com.example.trabalhoDevWeb.models.TypeTaskModel;
 import com.example.trabalhoDevWeb.models.TypeUserHistoryModel;
+import com.example.trabalhoDevWeb.models.UserHistoryModel;
 import com.example.trabalhoDevWeb.repositories.TypeUserHistoryRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
@@ -38,7 +39,7 @@ public class TypeUserHistoryController {
         Optional<TypeUserHistoryModel> typeUserHistorySelected = typeUserHistoryRepository.findById(id);
 
         if(typeUserHistorySelected.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Type Epic not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Type User History not found");
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(typeUserHistorySelected.get());
@@ -50,12 +51,24 @@ public class TypeUserHistoryController {
         Optional<TypeUserHistoryModel> typeUserHistorySelected = typeUserHistoryRepository.findById(id);
 
         if(typeUserHistorySelected.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Type Task not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Type User History not found");
         }
 
         var typeUserHistoryModel = typeUserHistorySelected.get();
         BeanUtils.copyProperties(typeUserHistoryDto, typeUserHistoryModel);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(typeUserHistoryRepository.save(typeUserHistoryModel));
+    }
+
+    @DeleteMapping("/typeUserHistory/{id}")
+    public ResponseEntity<Object> deleteUserHistory(@PathVariable(value = "id") String id) {
+        Optional<TypeUserHistoryModel> typeUserHistorySelected = typeUserHistoryRepository.findById(id);
+
+        if(typeUserHistorySelected.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Type User History not found");
+        }
+
+        typeUserHistoryRepository.delete(typeUserHistorySelected.get());
+        return ResponseEntity.status(HttpStatus.OK).body("Type User History deleted sucessfully");
     }
 }

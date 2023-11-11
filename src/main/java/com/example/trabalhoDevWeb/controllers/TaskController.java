@@ -32,11 +32,11 @@ public class TaskController {
         taskModel.setId(taskDto.id());
 
         TypeTaskModel typeTaskModel = typeTaskRepository.findById(taskDto.typeTask_id())
-                .orElseThrow(() -> new RuntimeException("TypeEpic not found with id: " + taskDto.typeTask_id()));
+                .orElseThrow(() -> new RuntimeException("Type Task not found with id: " + taskDto.typeTask_id()));
         taskModel.setTypeTask(typeTaskModel);
 
         UserHistoryModel userHistoryModel = userHistoryRepository.findById(taskDto.userHistory_id())
-                .orElseThrow(() -> new RuntimeException("TypeEpic not found with id: " + taskDto.userHistory_id()));
+                .orElseThrow(() -> new RuntimeException("User History not found with id: " + taskDto.userHistory_id()));
         taskModel.setUserHistory(userHistoryModel);
 
         BeanUtils.copyProperties(taskDto, taskModel);
@@ -54,7 +54,7 @@ public class TaskController {
         Optional<TaskModel> taskSelected = taskRepository.findById(id);
 
         if(taskSelected.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Type Epic not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(taskSelected.get());
@@ -66,12 +66,24 @@ public class TaskController {
         Optional<TaskModel> taskSelected = taskRepository.findById(id);
 
         if(taskSelected.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Type Task not found");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
         }
 
         var taskModel = taskSelected.get();
         BeanUtils.copyProperties(taskDto, taskModel);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(taskRepository.save(taskModel));
+    }
+
+    @DeleteMapping("/tasks/{id}")
+    public ResponseEntity<Object> deleteTask(@PathVariable(value = "id") String id) {
+        Optional<TaskModel> taskSelected = taskRepository.findById(id);
+
+        if(taskSelected.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
+        }
+
+        taskRepository.delete(taskSelected.get());
+        return ResponseEntity.status(HttpStatus.OK).body("Task deleted sucessfully");
     }
 }
