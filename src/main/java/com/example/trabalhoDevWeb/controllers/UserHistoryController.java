@@ -1,5 +1,6 @@
 package com.example.trabalhoDevWeb.controllers;
 
+import com.example.trabalhoDevWeb.dtos.EpicDto;
 import com.example.trabalhoDevWeb.dtos.UserHistoryDto;
 import com.example.trabalhoDevWeb.models.EpicModel;
 import com.example.trabalhoDevWeb.models.TaskModel;
@@ -59,5 +60,20 @@ public class UserHistoryController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(userHistorySelected.get());
+    }
+
+    @PutMapping("/userHistory/{id}")
+    public ResponseEntity<Object> updateUserHistory(@PathVariable(value = "id") String id,
+                                              @RequestBody @Valid UserHistoryDto userHistoryDto) {
+        Optional<UserHistoryModel> userHistorySelected = userHistoryRepository.findById(id);
+
+        if(userHistorySelected.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Type Task not found");
+        }
+
+        var userHistoryModel = userHistorySelected.get();
+        BeanUtils.copyProperties(userHistoryDto, userHistoryModel);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(userHistoryRepository.save(userHistoryModel));
     }
 }

@@ -1,6 +1,7 @@
 package com.example.trabalhoDevWeb.controllers;
 
 import com.example.trabalhoDevWeb.dtos.TaskDto;
+import com.example.trabalhoDevWeb.dtos.UserHistoryDto;
 import com.example.trabalhoDevWeb.models.*;
 import com.example.trabalhoDevWeb.repositories.TaskRepository;
 import com.example.trabalhoDevWeb.repositories.TypeTaskRepository;
@@ -57,5 +58,20 @@ public class TaskController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(taskSelected.get());
+    }
+
+    @PutMapping("/tasks/{id}")
+    public ResponseEntity<Object> updateTask(@PathVariable(value = "id") String id,
+                                                    @RequestBody @Valid TaskDto taskDto) {
+        Optional<TaskModel> taskSelected = taskRepository.findById(id);
+
+        if(taskSelected.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Type Task not found");
+        }
+
+        var taskModel = taskSelected.get();
+        BeanUtils.copyProperties(taskDto, taskModel);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(taskRepository.save(taskModel));
     }
 }

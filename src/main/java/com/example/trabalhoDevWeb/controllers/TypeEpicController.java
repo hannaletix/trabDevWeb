@@ -42,4 +42,19 @@ public class TypeEpicController {
 
         return ResponseEntity.status(HttpStatus.OK).body(typeEpicSelected.get());
     }
+
+    @PutMapping("/typeEpics/{id}")
+    public ResponseEntity<Object> updateTypeEpic(@PathVariable(value = "id") String id,
+                                                 @RequestBody @Valid TypeEpicDto typeEpicDto) {
+        Optional<TypeEpicModel> typeEpicSelected = typeEpicRepository.findById(id);
+
+        if(typeEpicSelected.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Type Epic not found");
+        }
+
+        var typeEpicModel = typeEpicSelected.get();
+        BeanUtils.copyProperties(typeEpicDto, typeEpicModel);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(typeEpicRepository.save(typeEpicModel));
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.trabalhoDevWeb.controllers;
 
+import com.example.trabalhoDevWeb.dtos.TypeTaskDto;
 import com.example.trabalhoDevWeb.dtos.TypeUserHistoryDto;
 import com.example.trabalhoDevWeb.models.TypeTaskModel;
 import com.example.trabalhoDevWeb.models.TypeUserHistoryModel;
@@ -41,5 +42,20 @@ public class TypeUserHistoryController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(typeUserHistorySelected.get());
+    }
+
+    @PutMapping("/typeUserHistory/{id}")
+    public ResponseEntity<Object> updateTypeUserHistory(@PathVariable(value = "id") String id,
+                                                 @RequestBody @Valid TypeUserHistoryDto typeUserHistoryDto) {
+        Optional<TypeUserHistoryModel> typeUserHistorySelected = typeUserHistoryRepository.findById(id);
+
+        if(typeUserHistorySelected.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Type Task not found");
+        }
+
+        var typeUserHistoryModel = typeUserHistorySelected.get();
+        BeanUtils.copyProperties(typeUserHistoryDto, typeUserHistoryModel);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(typeUserHistoryRepository.save(typeUserHistoryModel));
     }
 }
