@@ -1,5 +1,6 @@
 package com.example.trabalhoDevWeb.dtos;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 
 public record EpicDto(
@@ -7,5 +8,6 @@ public record EpicDto(
         String descricao,
         String relevancia,
         String categoria,
-        @NotBlank String typeEpic_id) {
+        @Valid long typeEpic_id,
+        @Valid long project_id) {
 }

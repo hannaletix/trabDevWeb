@@ -2,14 +2,11 @@ package com.example.trabalhoDevWeb.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
-import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "TB_TYPE_USER_HISTORY")
-public class TypeUserHistory implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class TypeUserHistory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;

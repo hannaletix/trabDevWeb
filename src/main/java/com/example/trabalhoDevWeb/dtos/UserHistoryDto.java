@@ -1,5 +1,6 @@
 package com.example.trabalhoDevWeb.dtos;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 
 public record UserHistoryDto(
@@ -7,6 +8,6 @@ public record UserHistoryDto(
         String descricao,
         String relevancia,
         String categoria,
-        @NotBlank String typeUserHistory_id,
-        @NotBlank String epic_id) {
+        @Valid long typeUserHistory_id,
+        @Valid long epic_id) {
 }

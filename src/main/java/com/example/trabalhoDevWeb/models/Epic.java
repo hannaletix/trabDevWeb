@@ -2,13 +2,11 @@ package com.example.trabalhoDevWeb.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @Table(name = "TB_EPICS")
-public class Epic implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class Epic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -16,12 +14,18 @@ public class Epic implements Serializable {
     private String descricao;
     private String relevancia;
     private String categoria;
+
     @ManyToOne
     @JoinColumn(name = "typeEpic_id")
     private TypeEpic typeEpic;
+
     @OneToMany(mappedBy = "epic")
     @JsonIgnore
     private List<UserHistory> userHistory;
+
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project project;
 
     public long getId() {
         return id;
@@ -52,4 +56,8 @@ public class Epic implements Serializable {
     public List<UserHistory> getUserHistory() { return userHistory; }
 
     public void setUserHistory(List<UserHistory> userHistory) { this.userHistory = userHistory; }
+
+    public Project getProject() { return project; }
+
+    public void setProject(Project project) { this.project = project; }
 }

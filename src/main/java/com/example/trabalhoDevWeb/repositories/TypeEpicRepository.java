@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TypeEpicRepository extends JpaRepository<TypeEpic, String> {
+public interface TypeEpicRepository extends JpaRepository<TypeEpic, Long> {
 }

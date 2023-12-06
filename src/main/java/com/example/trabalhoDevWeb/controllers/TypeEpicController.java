@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/typeEpics")
+@RequestMapping("/typeEpic")
 public class TypeEpicController {
     @Autowired
     TypeEpicRepository typeEpicRepository;
@@ -32,7 +32,7 @@ public class TypeEpicController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getOneTypeEpic(@PathVariable(value = "id") String id) {
+    public ResponseEntity<Object> getOneTypeEpic(@PathVariable(value = "id") long id) {
         Optional<TypeEpic> typeEpicSelected = typeEpicRepository.findById(id);
 
         if(typeEpicSelected.isEmpty()) {
@@ -43,7 +43,7 @@ public class TypeEpicController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateTypeEpic(@PathVariable(value = "id") String id,
+    public ResponseEntity<Object> updateTypeEpic(@PathVariable(value = "id") long id,
                                                  @RequestBody @Valid TypeEpicDto typeEpicDto) {
         Optional<TypeEpic> typeEpicSelected = typeEpicRepository.findById(id);
 
@@ -58,7 +58,7 @@ public class TypeEpicController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteTypeEpic(@PathVariable(value = "id") String id) {
+    public ResponseEntity<Object> deleteTypeEpic(@PathVariable(value = "id") long id) {
         Optional<TypeEpic> typeEpicSelected = typeEpicRepository.findById(id);
 
         if(typeEpicSelected.isEmpty()) {

@@ -32,7 +32,7 @@ public class TypeTaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getOneTypeTask(@PathVariable(value = "id") String id) {
+    public ResponseEntity<Object> getOneTypeTask(@PathVariable(value = "id") long id) {
         Optional<TypeTask> typeTaskSelected = typeTaskRepository.findById(id);
 
         if(typeTaskSelected.isEmpty()) {
@@ -43,7 +43,7 @@ public class TypeTaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateTypeTask(@PathVariable(value = "id") String id,
+    public ResponseEntity<Object> updateTypeTask(@PathVariable(value = "id") long id,
                                                  @RequestBody @Valid TypeTaskDto typeTaskDto) {
         Optional<TypeTask> typeTaskSelected = typeTaskRepository.findById(id);
 
@@ -58,7 +58,7 @@ public class TypeTaskController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteTypeTask(@PathVariable(value = "id") String id) {
+    public ResponseEntity<Object> deleteTypeTask(@PathVariable(value = "id") long id) {
         Optional<TypeTask> typeTaskSelected = typeTaskRepository.findById(id);
 
         if(typeTaskSelected.isEmpty()) {

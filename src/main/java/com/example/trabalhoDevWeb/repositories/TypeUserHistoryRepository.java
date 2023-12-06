@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface TypeUserHistoryRepository extends JpaRepository<TypeUserHistory, String> {
+public interface TypeUserHistoryRepository extends JpaRepository<TypeUserHistory, Long> {
     List<TypeUserHistory> findByTypeEpic_Id(long typeEpicId);
 }

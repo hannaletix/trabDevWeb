@@ -11,14 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/userHistory")
 public class UserHistoryController {
-
     @Autowired
     UserHistoryRepository userHistoryRepository;
     @Autowired
@@ -48,7 +46,7 @@ public class UserHistoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getOneUserHistory(@PathVariable(value = "id") String id) {
+    public ResponseEntity<Object> getOneUserHistory(@PathVariable(value = "id") long id) {
         Optional<UserHistory> userHistorySelected = userHistoryRepository.findById(id);
 
         if(userHistorySelected.isEmpty()) {
@@ -59,7 +57,7 @@ public class UserHistoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateUserHistory(@PathVariable(value = "id") String id,
+    public ResponseEntity<Object> updateUserHistory(@PathVariable(value = "id") long id,
                                               @RequestBody @Valid UserHistoryDto userHistoryDto) {
         Optional<UserHistory> userHistorySelected = userHistoryRepository.findById(id);
 
@@ -74,7 +72,7 @@ public class UserHistoryController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteUserHistory(@PathVariable(value = "id") String id) {
+    public ResponseEntity<Object> deleteUserHistory(@PathVariable(value = "id") long id) {
         Optional<UserHistory> userHistorySelected = userHistoryRepository.findById(id);
 
         if(userHistorySelected.isEmpty()) {

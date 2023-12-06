@@ -22,6 +22,7 @@ public class TypeUserHistoryController {
     TypeUserHistoryRepository typeUserHistoryRepository;
     @Autowired
     TypeEpicRepository typeEpicRepository;
+
     @PostMapping
     public ResponseEntity<TypeUserHistory> saveTypeUserHistory(@RequestBody @Valid TypeUserHistoryDto typeUserHistoryDto) {
         var typeUserHistory = new TypeUserHistory();
@@ -40,7 +41,7 @@ public class TypeUserHistoryController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getOneTypeUserHistory(@PathVariable(value = "id") String id) {
+    public ResponseEntity<Object> getOneTypeUserHistory(@PathVariable(value = "id") long id) {
         Optional<TypeUserHistory> typeUserHistorySelected = typeUserHistoryRepository.findById(id);
 
         if(typeUserHistorySelected.isEmpty()) {
@@ -51,7 +52,7 @@ public class TypeUserHistoryController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateTypeUserHistory(@PathVariable(value = "id") String id,
+    public ResponseEntity<Object> updateTypeUserHistory(@PathVariable(value = "id") long id,
                                                  @RequestBody @Valid TypeUserHistoryDto typeUserHistoryDto) {
         Optional<TypeUserHistory> typeUserHistorySelected = typeUserHistoryRepository.findById(id);
 
@@ -59,14 +60,14 @@ public class TypeUserHistoryController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Type User History not found");
         }
 
-        var typeUserHistoryModel = typeUserHistorySelected.get();
-        BeanUtils.copyProperties(typeUserHistoryDto, typeUserHistoryModel);
+        var typeUserHistory = typeUserHistorySelected.get();
+        BeanUtils.copyProperties(typeUserHistoryDto, typeUserHistory);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(typeUserHistoryRepository.save(typeUserHistoryModel));
+        return ResponseEntity.status(HttpStatus.CREATED).body(typeUserHistoryRepository.save(typeUserHistory));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteUserHistory(@PathVariable(value = "id") String id) {
+    public ResponseEntity<Object> deleteUserHistory(@PathVariable(value = "id") long id) {
         Optional<TypeUserHistory> typeUserHistorySelected = typeUserHistoryRepository.findById(id);
 
         if(typeUserHistorySelected.isEmpty()) {

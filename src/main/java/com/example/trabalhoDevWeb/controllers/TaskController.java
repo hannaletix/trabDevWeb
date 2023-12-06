@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/tasks")
+@RequestMapping("/task")
 public class TaskController {
     @Autowired
     TaskRepository taskRepository;
@@ -46,7 +46,7 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getOneTask(@PathVariable(value = "id") String id) {
+    public ResponseEntity<Object> getOneTask(@PathVariable(value = "id") long id) {
         Optional<Task> taskSelected = taskRepository.findById(id);
 
         if(taskSelected.isEmpty()) {
@@ -57,7 +57,7 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateTask(@PathVariable(value = "id") String id,
+    public ResponseEntity<Object> updateTask(@PathVariable(value = "id") long id,
                                                     @RequestBody @Valid TaskDto taskDto) {
         Optional<Task> taskSelected = taskRepository.findById(id);
 
@@ -72,7 +72,7 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteTask(@PathVariable(value = "id") String id) {
+    public ResponseEntity<Object> deleteTask(@PathVariable(value = "id") long id) {
         Optional<Task> taskSelected = taskRepository.findById(id);
 
         if(taskSelected.isEmpty()) {
