@@ -21,7 +21,6 @@ public class TypeTaskController {
     @PostMapping
     public ResponseEntity<TypeTask> saveTypeTask(@RequestBody @Valid TypeTaskDto typeTaskDto) {
         var typeTaskModel = new TypeTask();
-        typeTaskModel.setId(typeTaskDto.id());
         BeanUtils.copyProperties(typeTaskDto, typeTaskModel);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(typeTaskRepository.save(typeTaskModel));

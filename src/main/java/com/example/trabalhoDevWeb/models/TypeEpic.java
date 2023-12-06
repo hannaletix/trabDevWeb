@@ -1,10 +1,7 @@
 package com.example.trabalhoDevWeb.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.util.List;
@@ -14,9 +11,9 @@ import java.util.List;
 
 public class TypeEpic implements Serializable {
     private static final long serialVersionUID = 1L;
-
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     private String descricao;
 
     @OneToMany(mappedBy = "typeEpic")
@@ -26,11 +23,11 @@ public class TypeEpic implements Serializable {
     @OneToMany(mappedBy = "typeEpic")
     private List<TypeUserHistory> typeUserHistory;
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) { this.id = id; }
+    public void setId(long id) { this.id = id; }
 
     public String getDescricao() {
         return descricao;

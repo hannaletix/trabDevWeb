@@ -10,24 +10,22 @@ import java.util.List;
 @Table(name = "TB_TYPE_USER_HISTORY")
 public class TypeUserHistory implements Serializable {
     private static final long serialVersionUID = 1L;
-
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     private String descricao;
-
     @OneToMany(mappedBy = "typeUserHistory")
     @JsonIgnore
     private List<UserHistory> userHistory;
-
     @ManyToOne
     @JoinColumn(name = "typeEpic_id")
     private TypeEpic typeEpic;
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) { this.id = id; }
+    public void setId(long id) { this.id = id; }
 
     public String getDescricao() {
         return descricao;

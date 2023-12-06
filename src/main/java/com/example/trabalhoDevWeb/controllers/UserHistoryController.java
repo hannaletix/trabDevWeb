@@ -28,7 +28,6 @@ public class UserHistoryController {
     @PostMapping
     public ResponseEntity<UserHistory> saveUserHistory(@RequestBody @Valid UserHistoryDto userHistoryDto) {
         var userHistoryModel = new UserHistory();
-        userHistoryModel.setId(userHistoryDto.id());
 
         TypeUserHistory typeUserHistoryModel = typeUserHistoryRepository.findById(userHistoryDto.typeUserHistory_id())
                 .orElseThrow(() -> new RuntimeException("Type User History not found with id: " + userHistoryDto.typeUserHistory_id()));

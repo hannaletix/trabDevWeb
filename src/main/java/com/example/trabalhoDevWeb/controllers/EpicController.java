@@ -17,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/epics")
@@ -33,7 +32,6 @@ public class EpicController {
     @PostMapping
     public ResponseEntity<Epic> saveEpic(@RequestBody @Valid EpicDto epicDto) {
         var epic = new Epic();
-        epic.setId(epicDto.id());
         epic.setTitulo(epicDto.titulo());
         epic.setDescricao(epicDto.descricao());
         epic.setRelevancia(epicDto.relevancia());
@@ -51,11 +49,6 @@ public class EpicController {
         // Gerando o UserHistory
         for (TypeUserHistory typeUserHistory : typeUserHistories) {
             UserHistory userHistory = new UserHistory();
-
-            String id = UUID.randomUUID().toString();
-            userHistory.setId(id);
-
-            userHistory.setTitulo(epic.getTitulo());
             userHistory.setRelevancia(epic.getRelevancia());
             userHistory.setCategoria(epic.getCategoria());
             userHistory.setTypeUserHistory(typeUserHistory);
@@ -63,8 +56,8 @@ public class EpicController {
 
             String descricaoEpic = epic.getDescricao();
             String descricaoTypeUserHistory = typeUserHistory.getDescricao();
-            String descricaoUserHistory = generateDescriptionUserHistory(descricaoEpic, descricaoTypeUserHistory);
-            userHistory.setDescricao(descricaoUserHistory);
+            String titleUserHistory = generateDescriptionUserHistory(descricaoEpic, descricaoTypeUserHistory);
+            userHistory.setTitulo(titleUserHistory);
 
             userHistoryRepository.save(userHistory);
         }

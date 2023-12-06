@@ -25,7 +25,6 @@ public class TypeUserHistoryController {
     @PostMapping
     public ResponseEntity<TypeUserHistory> saveTypeUserHistory(@RequestBody @Valid TypeUserHistoryDto typeUserHistoryDto) {
         var typeUserHistory = new TypeUserHistory();
-        typeUserHistory.setId(typeUserHistoryDto.id());
         typeUserHistory.setDescricao(typeUserHistoryDto.descricao());
 
         // Relação com TypeEpic

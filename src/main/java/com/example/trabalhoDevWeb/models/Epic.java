@@ -10,7 +10,8 @@ import java.util.List;
 public class Epic implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     private String titulo;
     private String descricao;
     private String relevancia;
@@ -22,11 +23,11 @@ public class Epic implements Serializable {
     @JsonIgnore
     private List<UserHistory> userHistory;
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) { this.id = id; }
+    public void setId(long id) { this.id = id; }
 
     public String getTitulo() { return titulo; }
 

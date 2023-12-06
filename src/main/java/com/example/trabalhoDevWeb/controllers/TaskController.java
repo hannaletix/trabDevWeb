@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +26,6 @@ public class TaskController {
     @PostMapping
     public ResponseEntity<Task> saveTask(@RequestBody @Valid TaskDto taskDto) {
         var taskModel = new Task();
-        taskModel.setId(taskDto.id());
 
         TypeTask typeTaskModel = typeTaskRepository.findById(taskDto.typeTask_id())
                 .orElseThrow(() -> new RuntimeException("Type Task not found with id: " + taskDto.typeTask_id()));

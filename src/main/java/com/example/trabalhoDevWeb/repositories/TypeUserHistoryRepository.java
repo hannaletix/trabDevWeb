@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface TypeUserHistoryRepository extends JpaRepository<TypeUserHistory, String> {
-    List<TypeUserHistory> findByTypeEpic_Id(String typeEpicId);
+    List<TypeUserHistory> findByTypeEpic_Id(long typeEpicId);
 }
