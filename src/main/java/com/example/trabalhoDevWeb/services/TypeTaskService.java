@@ -2,7 +2,10 @@ package com.example.trabalhoDevWeb.services;
 
 import com.example.trabalhoDevWeb.dtos.TypeTaskDto;
 import com.example.trabalhoDevWeb.models.TypeTask;
+import com.example.trabalhoDevWeb.models.TypeUserHistory;
 import com.example.trabalhoDevWeb.repositories.TypeTaskRepository;
+import com.example.trabalhoDevWeb.repositories.TypeUserHistoryRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,17 +15,29 @@ import java.util.Optional;
 @Service
 public class TypeTaskService {
     private final TypeTaskRepository typeTaskRepository;
+    private final TypeUserHistoryRepository typeUserHistoryRepository;
 
     @Autowired
-    public TypeTaskService(TypeTaskRepository typeTaskRepository) {
+    public TypeTaskService(TypeTaskRepository typeTaskRepository, TypeUserHistoryRepository typeUserHistoryRepository) {
         this.typeTaskRepository = typeTaskRepository;
+        this.typeUserHistoryRepository = typeUserHistoryRepository;
     }
 
     public TypeTask saveTypeTask(TypeTaskDto typeTaskDto) {
-        TypeTask typeTaskModel = new TypeTask();
-        BeanUtils.copyProperties(typeTaskDto, typeTaskModel);
+        try {
+            TypeTask typeTask = new TypeTask();
+            typeTask.setDescricao(typeTaskDto.descricao());
 
-        return typeTaskRepository.save(typeTaskModel);
+            // Relação com typeUserHistory
+            TypeUserHistory typeUserHistory = typeUserHistoryRepository.findById(typeTaskDto.typeUserHistory_id())
+                    .orElse(null);
+            typeTask.setTypeUserHistory(typeUserHistory);
+
+            return typeTaskRepository.save(typeTask);
+        } catch (Exception e) {
+            System.out.println("Erro ao salvar o TypeTask: " + e.getMessage());
+            throw e;
+        }
     }
 
     public List<TypeTask> getAllTypeTasks() {
@@ -54,6 +69,12 @@ public class TypeTaskService {
         }
 
         return false;
+    }
+
+    // Criada para auxiliar nos testes
+    @Transactional
+    public void deleteAllTypeTasks() {
+        typeTaskRepository.deleteAll();
     }
 }
 

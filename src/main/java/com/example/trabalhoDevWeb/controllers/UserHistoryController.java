@@ -57,5 +57,12 @@ public class UserHistoryController {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User History not found");
     }
+
+    // Criada para auxiliar nos testes
+    @DeleteMapping("/deleteAll")
+    public ResponseEntity<Object> deleteAllUserHistories() {
+        userHistoryService.deleteAllUserHistories();
+        return ResponseEntity.status(HttpStatus.OK).body("All UserHistories deleted successfully");
+    }
 }
 

@@ -18,6 +18,10 @@ public class TypeUserHistory {
     @JoinColumn(name = "typeEpic_id")
     private TypeEpic typeEpic;
 
+    @OneToMany(mappedBy = "typeUserHistory")
+    @JsonIgnore
+    private List<TypeTask> typeTasks;
+
     public long getId() {
         return id;
     }
@@ -39,4 +43,8 @@ public class TypeUserHistory {
     public TypeEpic getTypeEpic() { return typeEpic; }
 
     public void setTypeEpic(TypeEpic typeEpic) { this.typeEpic = typeEpic; }
+
+    public List<TypeTask> getTypeTasks() { return typeTasks; }
+
+    public void setTypeTasks(List<TypeTask> typeTasks) { this.typeTasks = typeTasks; }
 }

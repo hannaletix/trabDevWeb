@@ -57,4 +57,11 @@ public class EpicController {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Epic not found");
     }
+
+    // Criada para auxiliar nos testes
+    @DeleteMapping("/deleteAll")
+    public ResponseEntity<Object> deleteAllEpics() {
+        epicService.deleteAllEpics();
+        return ResponseEntity.status(HttpStatus.OK).body("All Epics deleted successfully");
+    }
 }

@@ -7,6 +7,7 @@ import com.example.trabalhoDevWeb.models.UserHistory;
 import com.example.trabalhoDevWeb.repositories.EpicRepository;
 import com.example.trabalhoDevWeb.repositories.TypeUserHistoryRepository;
 import com.example.trabalhoDevWeb.repositories.UserHistoryRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,19 +28,24 @@ public class UserHistoryService {
     }
 
     public UserHistory saveUserHistory(UserHistoryDto userHistoryDto) {
-        UserHistory userHistoryModel = new UserHistory();
+        try {
+            UserHistory userHistoryModel = new UserHistory();
 
-        TypeUserHistory typeUserHistoryModel = typeUserHistoryRepository.findById(userHistoryDto.typeUserHistory_id())
-                .orElseThrow(() -> new RuntimeException("Type User History not found with id: " + userHistoryDto.typeUserHistory_id()));
-        userHistoryModel.setTypeUserHistory(typeUserHistoryModel);
+            TypeUserHistory typeUserHistoryModel = typeUserHistoryRepository.findById(userHistoryDto.typeUserHistory_id())
+                    .orElseThrow(() -> new RuntimeException("Type User History not found with id: " + userHistoryDto.typeUserHistory_id()));
+            userHistoryModel.setTypeUserHistory(typeUserHistoryModel);
 
-        Epic epicModel = epicRepository.findById(userHistoryDto.epic_id())
-                .orElseThrow(() -> new RuntimeException("Epic not found with id: " + userHistoryDto.epic_id()));
-        userHistoryModel.setEpic(epicModel);
+            Epic epicModel = epicRepository.findById(userHistoryDto.epic_id())
+                    .orElseThrow(() -> new RuntimeException("Epic not found with id: " + userHistoryDto.epic_id()));
+            userHistoryModel.setEpic(epicModel);
 
-        BeanUtils.copyProperties(userHistoryDto, userHistoryModel);
+            BeanUtils.copyProperties(userHistoryDto, userHistoryModel);
 
-        return userHistoryRepository.save(userHistoryModel);
+            return userHistoryRepository.save(userHistoryModel);
+        } catch (Exception e) {
+            System.out.println("Erro ao salvar o UserHistory: " + e.getMessage());
+            throw e;
+        }
     }
 
     public List<UserHistory> getAllUserHistory() {
@@ -71,6 +77,12 @@ public class UserHistoryService {
         }
 
         return false;
+    }
+
+    //Criada para auxiliar nos testes
+    @Transactional
+    public void deleteAllUserHistories() {
+        userHistoryRepository.deleteAll();
     }
 }
 

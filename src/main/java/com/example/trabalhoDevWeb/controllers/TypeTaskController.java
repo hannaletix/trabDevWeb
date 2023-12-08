@@ -57,5 +57,12 @@ public class TypeTaskController {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Type Task not found");
     }
+
+    // Criada para auxiliar nos testes
+    @DeleteMapping("/deleteAll")
+    public ResponseEntity<Object> deleteAllTypeTasks() {
+        typeTaskService.deleteAllTypeTasks();
+        return ResponseEntity.status(HttpStatus.OK).body("All TypeTasks deleted successfully");
+    }
 }
 

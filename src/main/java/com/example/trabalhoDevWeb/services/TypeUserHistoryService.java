@@ -23,15 +23,20 @@ public class TypeUserHistoryService {
     }
 
     public TypeUserHistory saveTypeUserHistory(TypeUserHistoryDto typeUserHistoryDto) {
-        TypeUserHistory typeUserHistory = new TypeUserHistory();
-        typeUserHistory.setDescricao(typeUserHistoryDto.descricao());
+        try {
+            TypeUserHistory typeUserHistory = new TypeUserHistory();
+            typeUserHistory.setDescricao(typeUserHistoryDto.descricao());
 
-        // Relação com TypeEpic
-        TypeEpic typeEpic = typeEpicRepository.findById(typeUserHistoryDto.typeEpic_id())
-                .orElse(null);
-        typeUserHistory.setTypeEpic(typeEpic);
+            // Relação com TypeEpic
+            TypeEpic typeEpic = typeEpicRepository.findById(typeUserHistoryDto.typeEpic_id())
+                    .orElse(null);
+            typeUserHistory.setTypeEpic(typeEpic);
 
-        return typeUserHistoryRepository.save(typeUserHistory);
+            return typeUserHistoryRepository.save(typeUserHistory);
+        } catch (Exception e) {
+            System.out.println("Erro ao salvar o TypeUserHistory: " + e.getMessage());
+            throw e;
+        }
     }
 
     public List<TypeUserHistory> getAllTypeUserHistory() {

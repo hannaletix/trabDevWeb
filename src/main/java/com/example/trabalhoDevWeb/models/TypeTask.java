@@ -16,6 +16,10 @@ public class TypeTask {
     @JsonIgnore
     private List<Task> task;
 
+    @ManyToOne
+    @JoinColumn(name = "typeUserHistory_id")
+    private TypeUserHistory typeUserHistory;
+
     public long getId() {
         return id;
     }
@@ -33,4 +37,9 @@ public class TypeTask {
     public List<Task> getTask() { return task; }
 
     public void setTask(List<Task> task) { this.task = task; }
+
+    public TypeUserHistory getTypeUserHistory() { return typeUserHistory; }
+
+    public void setTypeUserHistory(TypeUserHistory typeUserHistory) { this.typeUserHistory = typeUserHistory; }
+
 }

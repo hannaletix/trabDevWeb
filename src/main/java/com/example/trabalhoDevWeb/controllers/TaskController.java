@@ -57,5 +57,12 @@ public class TaskController {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Task not found");
     }
+
+    // Criada para auxiliar nos testes
+    @DeleteMapping("/deleteAll")
+    public ResponseEntity<Object> deleteAllTasks() {
+        taskService.deleteAllTasks();
+        return ResponseEntity.status(HttpStatus.OK).body("All tasks deleted successfully");
+    }
 }
 

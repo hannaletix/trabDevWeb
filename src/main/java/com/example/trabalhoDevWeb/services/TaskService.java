@@ -7,6 +7,7 @@ import com.example.trabalhoDevWeb.models.UserHistory;
 import com.example.trabalhoDevWeb.repositories.TaskRepository;
 import com.example.trabalhoDevWeb.repositories.TypeTaskRepository;
 import com.example.trabalhoDevWeb.repositories.UserHistoryRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -73,6 +74,12 @@ public class TaskService {
         }
 
         return false;
+    }
+
+    // Criada para auxiliar nos testes
+    @Transactional
+    public void deleteAllTasks() {
+        taskRepository.deleteAll();
     }
 }
 
