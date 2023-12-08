@@ -2,70 +2,58 @@ package com.example.trabalhoDevWeb.controllers;
 
 import com.example.trabalhoDevWeb.dtos.TypeEpicDto;
 import com.example.trabalhoDevWeb.models.TypeEpic;
-import com.example.trabalhoDevWeb.repositories.TypeEpicRepository;
+import com.example.trabalhoDevWeb.services.TypeEpicService;
 import jakarta.validation.Valid;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/typeEpic")
 public class TypeEpicController {
+    private final TypeEpicService typeEpicService;
     @Autowired
-    TypeEpicRepository typeEpicRepository;
+    public TypeEpicController(TypeEpicService typeEpicService) {
+        this.typeEpicService = typeEpicService;
+    }
 
     @PostMapping
     public ResponseEntity<TypeEpic> saveTypeEpic(@RequestBody @Valid TypeEpicDto typeEpicDto) {
-        var typeEpicModel = new TypeEpic();
-        BeanUtils.copyProperties(typeEpicDto, typeEpicModel);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(typeEpicRepository.save(typeEpicModel));
+        TypeEpic savedTypeEpic = typeEpicService.saveTypeEpic(typeEpicDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedTypeEpic);
     }
 
     @GetMapping
     public ResponseEntity<List<TypeEpic>> getAllTypeEpics() {
-        return ResponseEntity.status(HttpStatus.OK).body(typeEpicRepository.findAll());
+        List<TypeEpic> allTypeEpics = typeEpicService.getAllTypeEpics();
+        return ResponseEntity.status(HttpStatus.OK).body(allTypeEpics);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getOneTypeEpic(@PathVariable(value = "id") long id) {
-        Optional<TypeEpic> typeEpicSelected = typeEpicRepository.findById(id);
-
-        if(typeEpicSelected.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Type Epic not found");
-        }
-
-        return ResponseEntity.status(HttpStatus.OK).body(typeEpicSelected.get());
+        return typeEpicService.getOneTypeEpic(id)
+                .map(typeEpic -> ResponseEntity.status(HttpStatus.OK).body((Object) typeEpic))
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body("Type Epic not found"));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateTypeEpic(@PathVariable(value = "id") long id,
                                                  @RequestBody @Valid TypeEpicDto typeEpicDto) {
-        Optional<TypeEpic> typeEpicSelected = typeEpicRepository.findById(id);
-
-        if(typeEpicSelected.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Type Epic not found");
-        }
-
-        var typeEpicModel = typeEpicSelected.get();
-        BeanUtils.copyProperties(typeEpicDto, typeEpicModel);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(typeEpicRepository.save(typeEpicModel));
+        return typeEpicService.updateTypeEpic(id, typeEpicDto)
+                .map(updatedTypeEpic -> ResponseEntity.status(HttpStatus.CREATED).body((Object) updatedTypeEpic))
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body("Type Epic not found"));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteTypeEpic(@PathVariable(value = "id") long id) {
-        Optional<TypeEpic> typeEpicSelected = typeEpicRepository.findById(id);
+        boolean isDeleted = typeEpicService.deleteTypeEpic(id);
 
-        if(typeEpicSelected.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Type Epic not found");
+        if (isDeleted) {
+            return ResponseEntity.status(HttpStatus.OK).body("Type Epic deleted successfully");
         }
 
-        typeEpicRepository.delete(typeEpicSelected.get());
-        return ResponseEntity.status(HttpStatus.OK).body("Type Epic deleted sucessfully");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Type Epic not found");
     }
 }

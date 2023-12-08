@@ -2,71 +2,55 @@ package com.example.trabalhoDevWeb.controllers;
 
 import com.example.trabalhoDevWeb.dtos.ProjectDto;
 import com.example.trabalhoDevWeb.models.Project;
-import com.example.trabalhoDevWeb.repositories.ProjectRepository;
+import com.example.trabalhoDevWeb.services.ProjectService;
 import jakarta.validation.Valid;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/project")
 public class ProjectController {
     @Autowired
-    ProjectRepository projectRepository;
+    ProjectService projectService;
 
     @PostMapping
-    public ResponseEntity<Project> saveProject(@RequestBody @Valid ProjectDto projectDto) {
-        var project = new Project();
-        project.setName(projectDto.name());
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(projectRepository.save(project));
+    public ResponseEntity<Object> saveProject(@RequestBody @Valid ProjectDto projectDto) {
+        Project savedProject = projectService.saveProject(projectDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedProject);
     }
 
     @GetMapping
     public ResponseEntity<List<Project>> getAllProjects() {
-        return ResponseEntity.status(HttpStatus.OK).body(projectRepository.findAll());
+        List<Project> allProjects = projectService.getAllProjects();
+        return ResponseEntity.status(HttpStatus.OK).body(allProjects);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getOneProject(@PathVariable(value = "id") long id) {
-        Optional<Project> projectSelected = projectRepository.findById(id);
-
-        if(projectSelected.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Type User History not found");
-        }
-
-        return ResponseEntity.status(HttpStatus.OK).body(projectSelected.get());
+        return projectService.getOneProject(id)
+                .map(project -> ResponseEntity.status(HttpStatus.OK).body((Object) project))
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body("Project not found"));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateProject(@PathVariable(value = "id") long id,
-                                                        @RequestBody @Valid ProjectDto projectDto) {
-        Optional<Project> projectSelected = projectRepository.findById(id);
-
-        if(projectSelected.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Type User History not found");
-        }
-
-        var project = projectSelected.get();
-        BeanUtils.copyProperties(projectDto, project);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(projectRepository.save(project));
+                                                @RequestBody @Valid ProjectDto projectDto) {
+        return projectService.updateProject(id, projectDto)
+                .map(updatedProject -> ResponseEntity.status(HttpStatus.CREATED).body((Object) updatedProject))
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body("Project not found"));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteProject(@PathVariable(value = "id") long id) {
-        Optional<Project> projectSelected = projectRepository.findById(id);
+        boolean isDeleted = projectService.deleteProject(id);
 
-        if(projectSelected.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Type User History not found");
+        if (isDeleted) {
+            return ResponseEntity.status(HttpStatus.OK).body("Project deleted successfully");
         }
 
-        projectRepository.delete(projectSelected.get());
-        return ResponseEntity.status(HttpStatus.OK).body("Type User History deleted sucessfully");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Project not found");
     }
 }
