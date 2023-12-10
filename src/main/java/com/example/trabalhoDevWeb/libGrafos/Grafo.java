@@ -117,8 +117,6 @@ public class Grafo<TIPO> {
             resultado.add(ordenacao.get(i).getDado());
         } //Revertendo a lista de ordenação e colocando os vértices do final-começo para ordenar corretamente
 
-        
-
         return resultado;
     }
 
@@ -150,6 +148,11 @@ public class Grafo<TIPO> {
         for (Aresta<TIPO> aresta : this.arestas) {
             System.out.println(aresta.getInicio().getDado() + " -> " + aresta.getFim().getDado());
         }
+    }
+
+    // Método para obter todos os vértices do grafo
+    public List<Vertice<TIPO>> getVertices() {
+        return this.vertices;
     }
 }
 

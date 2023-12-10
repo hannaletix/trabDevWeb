@@ -34,6 +34,10 @@ public class EpicController {
             System.out.println("Há ciclos de dependência.");
         } else {
             System.out.println("Não há ciclos de dependência.");
+
+            // Realizando a ordenação topológica e imprimindo a ordem resultante
+            List<Long> ordemExecucao = dependencyService.ordenacaoTopologica();
+            System.out.println("Ordem de execução recomendada: " + ordemExecucao);
         }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(savedEpic);
