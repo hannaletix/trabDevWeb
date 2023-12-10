@@ -2,6 +2,7 @@ package com.example.trabalhoDevWeb.controllers;
 
 import com.example.trabalhoDevWeb.dtos.EpicDto;
 import com.example.trabalhoDevWeb.models.*;
+import com.example.trabalhoDevWeb.services.DependencyService;
 import com.example.trabalhoDevWeb.services.EpicService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,15 +15,27 @@ import java.util.List;
 @RequestMapping("/epic")
 public class EpicController {
     private final EpicService epicService;
+    private final DependencyService dependencyService;
 
     @Autowired
-    public EpicController(EpicService epicService) {
+    public EpicController(EpicService epicService, DependencyService dependencyService) {
         this.epicService = epicService;
+        this.dependencyService = dependencyService;
     }
 
     @PostMapping
     public ResponseEntity<Object> saveEpic(@RequestBody @Valid EpicDto epicDto) {
         Epic savedEpic = epicService.saveEpic(epicDto);
+
+        dependencyService.imprimirGrafo(); // Imprimindo o estado atual do grafo
+
+        // Verificando ciclos após adicionar as UserHistories
+        if (dependencyService.checkCycles()) {
+            System.out.println("Há ciclos de dependência.");
+        } else {
+            System.out.println("Não há ciclos de dependência.");
+        }
+
         return ResponseEntity.status(HttpStatus.CREATED).body(savedEpic);
     }
 

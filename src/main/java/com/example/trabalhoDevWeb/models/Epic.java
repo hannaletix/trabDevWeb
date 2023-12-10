@@ -27,9 +27,7 @@ public class Epic {
     @JoinColumn(name = "project_id")
     private Project project;
 
-    public long getId() {
-        return id;
-    }
+    public long getId() { return id; }
 
     public void setId(long id) { this.id = id; }
 
@@ -60,4 +58,5 @@ public class Epic {
     public Project getProject() { return project; }
 
     public void setProject(Project project) { this.project = project; }
+
 }

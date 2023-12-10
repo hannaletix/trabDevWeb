@@ -1,17 +1,19 @@
 package com.example.trabalhoDevWeb.services;
 
 import com.example.trabalhoDevWeb.dtos.EpicDto;
+import com.example.trabalhoDevWeb.libGrafos.Grafo;
 import com.example.trabalhoDevWeb.models.*;
 import com.example.trabalhoDevWeb.repositories.*;
 import jakarta.transaction.Transactional;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class EpicService {
@@ -22,6 +24,8 @@ public class EpicService {
     private final ProjectRepository projectRepository;
     private final TypeTaskRepository typeTaskRepository;
     private final TaskRepository taskRepository;
+    private final DependencyService dependencyService;
+    private Grafo<Long> grafo = new Grafo<>();
 
     // Constante usada para extrair as frases
     private static final String KEYWORD = "desejo";
@@ -34,7 +38,8 @@ public class EpicService {
             UserHistoryRepository userHistoryRepository,
             ProjectRepository projectRepository,
             TypeTaskRepository typeTaskRepository,
-            TaskRepository taskRepository) {
+            TaskRepository taskRepository,
+            DependencyService dependencyService) {
         this.epicRepository = epicRepository;
         this.typeEpicRepository = typeEpicRepository;
         this.typeUserHistoryRepository = typeUserHistoryRepository;
@@ -42,6 +47,7 @@ public class EpicService {
         this.projectRepository = projectRepository;
         this.typeTaskRepository = typeTaskRepository;
         this.taskRepository = taskRepository;
+        this.dependencyService = dependencyService;
     }
 
     @Transactional
@@ -58,9 +64,13 @@ public class EpicService {
             Project project = projectRepository.findById(epicDto.project_id())
                     .orElseThrow(() -> new RuntimeException("Project not found with id: " + epicDto.project_id()));
             epic.setProject(project);
-            epicRepository.save(epic);
 
-            processUserHistoriesAsync(epic);
+            epicRepository.save(epic);
+            CompletableFuture<Void> epicFuture = dependencyService.addVerticeEpic(epic);
+            epicFuture.join(); // Aguarda a conclusão da adição do vértice do Épico
+
+            CompletableFuture<Void> createdUSTask = processUserHistoriesAsync(epic);
+            createdUSTask.join(); // Aguarda a conclusão da adição das US's e Tasks
 
             return epic;
         } catch (Exception e) {
@@ -68,8 +78,9 @@ public class EpicService {
             throw e;
         }
     }
-    @Async
-    public void processUserHistoriesAsync(Epic epic) {
+
+    @Transactional
+    public CompletableFuture<Void> processUserHistoriesAsync(Epic epic) {
         // Lista de TypeUserHistory correspondentes ao TypeEpic do Epic
         List<TypeUserHistory> typeUserHistories = typeUserHistoryRepository.findByTypeEpic_Id(epic.getTypeEpic().getId());
 
@@ -78,6 +89,9 @@ public class EpicService {
             UserHistory userHistory = generateUserHistory(epic, typeUserHistory);
             userHistoryRepository.save(userHistory);
 
+            dependencyService.addVerticeUserHistory(userHistory); // Adicionando a UserHistory ao grafo
+            dependencyService.addDependencia(epic.getId(), userHistory.getId()); // Adicionando dependências
+
             // Lista de TypeTask correspondentes ao TypeUserHistory
             List<TypeTask> typeTasks = typeTaskRepository.findByTypeUserHistory(typeUserHistory);
 
@@ -85,8 +99,13 @@ public class EpicService {
             for (TypeTask typeTask : typeTasks) {
                 Task task = generateTask(userHistory, typeTask);
                 taskRepository.save(task);
+
+                dependencyService.addVerticeTask(task); // Adicionando a Task ao grafo
+                dependencyService.addDependencia(userHistory.getId(), task.getId()); // Adicionando dependências
             }
         }
+
+        return CompletableFuture.completedFuture(null);
     }
 
     private UserHistory generateUserHistory(Epic epic, TypeUserHistory typeUserHistory) {

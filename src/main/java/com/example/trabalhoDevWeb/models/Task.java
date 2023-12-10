@@ -11,6 +11,8 @@ public class Task {
     private long id;
     private String titulo;
     private String descricao;
+    private Long origem; // usado nos grafos
+    private Long destino; // usado nos grafos
     @ManyToOne
     @JoinColumn(name = "typeTask_id")
     private TypeTask typeTask;
@@ -47,4 +49,12 @@ public class Task {
     public UserHistory getUserHistory() { return userHistory; }
 
     public void setUserHistory(UserHistory userHistory) { this.userHistory = userHistory; }
+
+    public Long getOrigem() { return origem; }
+
+    public void setOrigem(Long origem) { this.origem = origem; }
+
+    public Long getDestino() { return destino; }
+
+    public void setDestino(Long destino) { this.destino = destino; }
 }

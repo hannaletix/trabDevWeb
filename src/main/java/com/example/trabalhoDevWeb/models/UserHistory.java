@@ -14,6 +14,8 @@ public class UserHistory {
     private String descricao;
     private String relevancia;
     private String categoria;
+    private Long origem; // usado nos grafos
+    private Long destino; // usado nos grafos
     @ManyToOne
     @JoinColumn(name = "typeUserHistory_id")
     private TypeUserHistory typeUserHistory;
@@ -57,4 +59,12 @@ public class UserHistory {
     public List<Task> getTask() { return task; }
 
     public void setTask(List<Task> task) { this.task = task; }
+
+    public Long getOrigem() { return origem; }
+
+    public void setOrigem(Long origem) { this.origem = origem; }
+
+    public Long getDestino() { return destino; }
+
+    public void setDestino(Long destino) { this.destino = destino; }
 }
