@@ -154,6 +154,28 @@ public class Grafo<TIPO> {
     public List<Vertice<TIPO>> getVertices() {
         return this.vertices;
     }
+
+    // Método para remover um vértice específico do grafo
+    public void removerVertice(TIPO dado) {
+        // Encontrar o vértice a ser removido
+        Vertice<TIPO> verticeParaRemover = getVertice(dado);
+
+        if (verticeParaRemover != null) {
+            // Remover arestas associadas ao vértice
+            List<Aresta<TIPO>> arestasRemover = new ArrayList<>();
+
+            for (Aresta<TIPO> aresta : this.arestas) {
+                if (aresta.getInicio() == verticeParaRemover || aresta.getFim() == verticeParaRemover) {
+                    arestasRemover.add(aresta);
+                }
+            }
+
+            this.arestas.removeAll(arestasRemover);
+
+            // Remover o vértice da lista de vértices
+            this.vertices.remove(verticeParaRemover);
+        }
+    }
 }
 
 

@@ -22,13 +22,15 @@ public class TaskService {
     private final TypeTaskRepository typeTaskRepository;
     private final UserHistoryRepository userHistoryRepository;
     private final ArvoreBinariaExemplo<Long> arvoreTasks;
+    private final DependencyService dependencyService;
 
     @Autowired
-    public TaskService(TaskRepository taskRepository, TypeTaskRepository typeTaskRepository, UserHistoryRepository userHistoryRepository, ArvoreBinariaExemplo<Long> arvoreTasks) {
+    public TaskService(TaskRepository taskRepository, TypeTaskRepository typeTaskRepository, UserHistoryRepository userHistoryRepository, ArvoreBinariaExemplo<Long> arvoreTasks, DependencyService dependencyService) {
         this.taskRepository = taskRepository;
         this.typeTaskRepository = typeTaskRepository;
         this.userHistoryRepository = userHistoryRepository;
         this.arvoreTasks = arvoreTasks;
+        this.dependencyService = dependencyService;
     }
 
     public Task saveTask(TaskDto taskDto) {
@@ -84,6 +86,9 @@ public class TaskService {
             // Remove a tarefa da árvore, se ela existir
             arvoreTasks.remover(id);
 
+            // Imprime a árvore de tasks para verificar se a exclusão funcionou
+            System.out.println("Árvore de tasks: " + arvoreTasks.caminharEmOrdem());
+
             return true;
         }
 
@@ -94,6 +99,12 @@ public class TaskService {
     @Transactional
     public void deleteAllTasks() {
         taskRepository.deleteAll();
+        arvoreTasks.limparArvore();
+
+        // Imprime a árvore de tasks para verificar se a exclusão funcionou
+        System.out.println("Árvore de tasks: " + arvoreTasks.caminharEmOrdem());
+
+        dependencyService.deleteAllTasks();
     }
 }
 

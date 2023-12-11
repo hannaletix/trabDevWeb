@@ -19,12 +19,14 @@ public class UserHistoryService {
     private final UserHistoryRepository userHistoryRepository;
     private final TypeUserHistoryRepository typeUserHistoryRepository;
     private final EpicRepository epicRepository;
+    private final DependencyService dependencyService;
 
     @Autowired
-    public UserHistoryService(UserHistoryRepository userHistoryRepository, TypeUserHistoryRepository typeUserHistoryRepository, EpicRepository epicRepository) {
+    public UserHistoryService(UserHistoryRepository userHistoryRepository, TypeUserHistoryRepository typeUserHistoryRepository, EpicRepository epicRepository, DependencyService dependencyService) {
         this.userHistoryRepository = userHistoryRepository;
         this.typeUserHistoryRepository = typeUserHistoryRepository;
         this.epicRepository = epicRepository;
+        this.dependencyService = dependencyService;
     }
 
     public UserHistory saveUserHistory(UserHistoryDto userHistoryDto) {
@@ -83,6 +85,7 @@ public class UserHistoryService {
     @Transactional
     public void deleteAllUserHistories() {
         userHistoryRepository.deleteAll();
+        dependencyService.deleteAllUserHistories();
     }
 }
 

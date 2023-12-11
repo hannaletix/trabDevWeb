@@ -2,7 +2,6 @@ package com.example.trabalhoDevWeb.services;
 
 import com.example.trabalhoDevWeb.dtos.EpicDto;
 import com.example.trabalhoDevWeb.libArvore.ArvoreBinariaExemplo;
-import com.example.trabalhoDevWeb.libGrafos.Grafo;
 import com.example.trabalhoDevWeb.models.*;
 import com.example.trabalhoDevWeb.repositories.*;
 import jakarta.transaction.Transactional;
@@ -24,7 +23,6 @@ public class EpicService {
     private final TaskRepository taskRepository;
     private final DependencyService dependencyService;
     private final ArvoreBinariaExemplo<Long> arvoreTasks;
-    private Grafo<Long> grafo = new Grafo<>();
 
     // Constante usada para extrair as frases
     private static final String KEYWORD = "desejo";
@@ -103,7 +101,6 @@ public class EpicService {
 
                 // Adiciona a task na árvore
                 arvoreTasks.adicionar(task.getId());
-                System.out.println("Tarefa adicionada à árvore. ID: " + task.getId());
 
                 dependencyService.addVerticeTask(task); // Adicionando a Task ao grafo
                 dependencyService.addDependencia(userHistory.getId(), task.getId()); // Adicionando dependências
@@ -216,6 +213,7 @@ public class EpicService {
     @Transactional
     public void deleteAllEpics() {
         epicRepository.deleteAll();
+        dependencyService.deleteAllEpics();
     }
 }
 

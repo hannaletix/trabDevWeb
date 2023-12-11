@@ -221,4 +221,6 @@ public class ArvoreBinariaExemplo<T> implements IArvoreBinaria<T> {
         pilha.clear(); //esvazia a pilha
         atual = null; //retorna o valor do no atual para nulo
     }
+
+    public void limparArvore() { raiz = null; }
 }

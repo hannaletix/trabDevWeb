@@ -6,8 +6,8 @@ import com.example.trabalhoDevWeb.libGrafos.Vertice;
 import com.example.trabalhoDevWeb.models.Epic;
 import com.example.trabalhoDevWeb.models.Task;
 import com.example.trabalhoDevWeb.models.UserHistory;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -48,39 +48,39 @@ public class DependencyService {
     public void imprimirGrafo() { this.grafo.imprimirGrafo(); }
 
     // Método para realizar a ordenação topológica do grafo
-    public List<Long> ordenacaoTopologica() {
-        List<Long> ordenacao = new ArrayList<>();
-        Stack<Long> pilha = new Stack<>();
-        List<Long> visitados = new ArrayList<>();
+    public List<Long> ordenacaoTopologica() { return this.grafo.ordenacaoTopologica(); }
 
-        for (Vertice<Long> vertice : this.grafo.getVertices()) {
-            if (!visitados.contains(vertice.getDado())) {
-                ordenacaoTopologicaRecursivo(vertice, visitados, pilha);
-            }
+    @Transactional
+    public void deleteAllTasks() {
+        // Obtém todas as tarefas do grafo
+        List<Vertice<Long>> verticesTarefas = grafo.getVertices();
+
+        // Remove cada tarefa
+        for (Vertice<Long> verticeTarefa : verticesTarefas) {
+            grafo.removerVertice(verticeTarefa.getDado());
         }
-
-        // Adicionando à lista
-        while (!pilha.isEmpty()) {
-            ordenacao.add(pilha.pop());
-        }
-
-        return ordenacao;
     }
 
-    // Método auxiliar recursivo para realizar a ordenação topológica a partir de um vértice
-    private void ordenacaoTopologicaRecursivo(Vertice<Long> vertice, List<Long> visitados, Stack<Long> ordenacao) {
-        visitados.add(vertice.getDado());
+    @Transactional
+    public void deleteAllUserHistories() {
+        // Obtém todas as UserHistories do grafo
+        List<Vertice<Long>> verticesUserHistories = grafo.getVertices();
 
-        for (Aresta<Long> aresta : vertice.getArestasSaida()) {
-            // Obtém o vértice vizinho ao longo da aresta
-            Vertice<Long> vizinho = aresta.getFim();
-            if (!visitados.contains(vizinho.getDado())) {
-                ordenacaoTopologicaRecursivo(vizinho, visitados, ordenacao);
-            }
+        // Remove cada UserHistory
+        for (Vertice<Long> verticeUserHistory : verticesUserHistories) {
+            grafo.removerVertice(verticeUserHistory.getDado());
         }
+    }
 
-        // Adiciona o vértice à pilha
-        ordenacao.push(vertice.getDado());
+    @Transactional
+    public void deleteAllEpics() {
+        // Obtém todas as Epics do grafo
+        List<Vertice<Long>> verticesEpics = grafo.getVertices();
+
+        // Remove cada Epic
+        for (Vertice<Long> verticeEpic : verticesEpics) {
+            grafo.removerVertice(verticeEpic.getDado());
+        }
     }
 }
 
