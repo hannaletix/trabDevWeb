@@ -1,6 +1,7 @@
 package com.example.trabalhoDevWeb.controllers;
 
 import com.example.trabalhoDevWeb.dtos.EpicDto;
+import com.example.trabalhoDevWeb.libArvore.ArvoreBinariaExemplo;
 import com.example.trabalhoDevWeb.models.*;
 import com.example.trabalhoDevWeb.services.DependencyService;
 import com.example.trabalhoDevWeb.services.EpicService;
@@ -16,11 +17,13 @@ import java.util.List;
 public class EpicController {
     private final EpicService epicService;
     private final DependencyService dependencyService;
+    private final ArvoreBinariaExemplo arvoreTasks;
 
     @Autowired
-    public EpicController(EpicService epicService, DependencyService dependencyService) {
+    public EpicController(EpicService epicService, DependencyService dependencyService, ArvoreBinariaExemplo arvoreTasks) {
         this.epicService = epicService;
         this.dependencyService = dependencyService;
+        this.arvoreTasks = arvoreTasks;
     }
 
     @PostMapping
@@ -39,6 +42,9 @@ public class EpicController {
             List<Long> ordemExecucao = dependencyService.ordenacaoTopologica();
             System.out.println("Ordem de execução recomendada: " + ordemExecucao);
         }
+
+        // Imprime a árvore de tasks
+        System.out.println("Árvore de tasks: " + arvoreTasks.caminharEmOrdem());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(savedEpic);
     }

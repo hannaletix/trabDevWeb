@@ -1,6 +1,8 @@
 package com.example.trabalhoDevWeb.services;
 
 import com.example.trabalhoDevWeb.dtos.TaskDto;
+import com.example.trabalhoDevWeb.libArvore.ArvoreAVLExemplo;
+import com.example.trabalhoDevWeb.libArvore.ArvoreBinariaExemplo;
 import com.example.trabalhoDevWeb.models.Task;
 import com.example.trabalhoDevWeb.models.TypeTask;
 import com.example.trabalhoDevWeb.models.UserHistory;
@@ -19,30 +21,34 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final TypeTaskRepository typeTaskRepository;
     private final UserHistoryRepository userHistoryRepository;
+    private final ArvoreBinariaExemplo<Long> arvoreTasks;
 
     @Autowired
-    public TaskService(TaskRepository taskRepository, TypeTaskRepository typeTaskRepository, UserHistoryRepository userHistoryRepository) {
+    public TaskService(TaskRepository taskRepository, TypeTaskRepository typeTaskRepository, UserHistoryRepository userHistoryRepository, ArvoreBinariaExemplo<Long> arvoreTasks) {
         this.taskRepository = taskRepository;
         this.typeTaskRepository = typeTaskRepository;
         this.userHistoryRepository = userHistoryRepository;
+        this.arvoreTasks = arvoreTasks;
     }
 
     public Task saveTask(TaskDto taskDto) {
-        Task taskModel = new Task();
+        Task task = new Task();
 
         // Relação com typeTask
         TypeTask typeTaskModel = typeTaskRepository.findById(taskDto.typeTask_id())
                 .orElseThrow(() -> new RuntimeException("Type Task not found with id: " + taskDto.typeTask_id()));
-        taskModel.setTypeTask(typeTaskModel);
+        task.setTypeTask(typeTaskModel);
 
         // Relação com userHistory
         UserHistory userHistoryModel = userHistoryRepository.findById(taskDto.userHistory_id())
                 .orElseThrow(() -> new RuntimeException("User History not found with id: " + taskDto.userHistory_id()));
-        taskModel.setUserHistory(userHistoryModel);
+        task.setUserHistory(userHistoryModel);
 
-        BeanUtils.copyProperties(taskDto, taskModel);
+        BeanUtils.copyProperties(taskDto, task);
 
-        return taskRepository.save(taskModel);
+        arvoreTasks.adicionar(task.getId()); // Adiciona a task na árvore
+
+        return taskRepository.save(task);
     }
 
     public List<Task> getAllTasks() {
@@ -50,6 +56,9 @@ public class TaskService {
     }
 
     public Optional<Task> getOneTask(long id) {
+        // Pesquisa na árvore
+        arvoreTasks.pesquisar(id);
+
         return taskRepository.findById(id);
     }
 
@@ -59,6 +68,7 @@ public class TaskService {
         if (taskSelected.isPresent()) {
             Task taskModel = taskSelected.get();
             BeanUtils.copyProperties(taskDto, taskModel);
+
             return Optional.of(taskRepository.save(taskModel));
         }
 
@@ -70,6 +80,10 @@ public class TaskService {
 
         if (taskSelected.isPresent()) {
             taskRepository.delete(taskSelected.get());
+
+            // Remove a tarefa da árvore, se ela existir
+            arvoreTasks.remover(id);
+
             return true;
         }
 

@@ -1,15 +1,13 @@
 package com.example.trabalhoDevWeb.services;
 
 import com.example.trabalhoDevWeb.dtos.EpicDto;
+import com.example.trabalhoDevWeb.libArvore.ArvoreBinariaExemplo;
 import com.example.trabalhoDevWeb.libGrafos.Grafo;
 import com.example.trabalhoDevWeb.models.*;
 import com.example.trabalhoDevWeb.repositories.*;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +23,7 @@ public class EpicService {
     private final TypeTaskRepository typeTaskRepository;
     private final TaskRepository taskRepository;
     private final DependencyService dependencyService;
+    private final ArvoreBinariaExemplo<Long> arvoreTasks;
     private Grafo<Long> grafo = new Grafo<>();
 
     // Constante usada para extrair as frases
@@ -39,7 +38,8 @@ public class EpicService {
             ProjectRepository projectRepository,
             TypeTaskRepository typeTaskRepository,
             TaskRepository taskRepository,
-            DependencyService dependencyService) {
+            DependencyService dependencyService,
+            ArvoreBinariaExemplo<Long> arvoreTasks) {
         this.epicRepository = epicRepository;
         this.typeEpicRepository = typeEpicRepository;
         this.typeUserHistoryRepository = typeUserHistoryRepository;
@@ -48,6 +48,7 @@ public class EpicService {
         this.typeTaskRepository = typeTaskRepository;
         this.taskRepository = taskRepository;
         this.dependencyService = dependencyService;
+        this.arvoreTasks = arvoreTasks;
     }
 
     @Transactional
@@ -99,6 +100,10 @@ public class EpicService {
             for (TypeTask typeTask : typeTasks) {
                 Task task = generateTask(userHistory, typeTask);
                 taskRepository.save(task);
+
+                // Adiciona a task na árvore
+                arvoreTasks.adicionar(task.getId());
+                System.out.println("Tarefa adicionada à árvore. ID: " + task.getId());
 
                 dependencyService.addVerticeTask(task); // Adicionando a Task ao grafo
                 dependencyService.addDependencia(userHistory.getId(), task.getId()); // Adicionando dependências
